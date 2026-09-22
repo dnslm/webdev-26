@@ -1,7 +1,23 @@
+/* 
+    БАЗА
+*/
 *,
 *::before,
 *::after {
     box-sizing: border-box;
+}
+
+h1, h2, h3, h4, h5, h6, p {
+    margin: 0;
+    font-family: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+    color: inherit;
+}
+
+button, input {
+    font-family: inherit;
+    color: inherit;
 }
 
 body {
@@ -11,13 +27,18 @@ body {
     min-height: 100vh;
     min-height: 100dvh;
 
-    font: 12px Arial;
+    font-family: "Inter", Arial, sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
     
     justify-content: center;
     align-items: center;
 
     margin: 0;
     padding: 0;
+
+    transition: background-color 0.3s ease;
 }
 
 .header {
@@ -27,7 +48,11 @@ body {
     position: sticky;
     top: 0;
 
+    display: flex;
     flex-direction: row;
+    justify-content: left;
+    align-items: center;
+    padding: 8px 0;
 }
 
 .logo {
@@ -47,6 +72,9 @@ body {
     padding: 16px;
 }
 
+/* 
+    КАРТОЧКА
+*/
 .card {
     width: 50%;
     max-width: 300px;
@@ -58,16 +86,41 @@ body {
 
     display: flex;
     flex-direction: column;
-    justify-self: center;
 
-    gap: 8px;
+    gap: 12px;
+}
+
+#login-card {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .card-header {
-    margin: 0;
+    margin: 0 0 5px 0;
+
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.3;
+}
+
+.social-login {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
 }
 
 .social {
+    width: 100%;
     background-color: white;
 
     border: 1px solid gray;
@@ -85,10 +138,25 @@ body {
     text-align: center;
     text-decoration: none;
     font-size: 13px;
+    font-weight: 500;
     cursor: pointer;
+
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.social:hover {
+    background-color: #f2f2f2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.social:active {
+    background-color: #f2f2f2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .text-input {
+    width: 100%;
+
     background-color: white;
 
     border: 1px solid gray;
@@ -96,17 +164,37 @@ body {
 
     color: black;
 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
     padding: 8px 12px;
 
     text-align: left;
     text-decoration: none;
     font-size: 13px;
-    cursor: pointer;
+    cursor: text;
+
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.text-input:focus {
+    outline: none;
+    border-color: #9a80db;
+    box-shadow: 0 0 0 3px rgba(154, 128, 219, 0.25);
+}
+
+input[required] {
+    border-left: 3px solid #9a80db;
+}
+
+.text-input.invalid {
+    border-color: #e05353;
+    animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-6px); }
+    40% { transform: translateX(6px); }
+    60% { transform: translateX(-4px); }
+    80% { transform: translateX(4px); }
 }
 
 .remember {
@@ -114,6 +202,8 @@ body {
     align-items: center;
     gap: 6px;
     cursor: pointer;
+
+    font-weight: 400;
 }
 
 .remember input {
@@ -122,6 +212,20 @@ body {
     margin: 2px;
 
     accent-color: #9a80db;
+
+    transition: transform 0.15s ease;
+}
+
+.remember input:checked {
+    transform: scale(1.05);
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    justify-content: space-between;
+    gap: 12px;
 }
 
 .sign-in {
@@ -141,9 +245,51 @@ body {
     text-align: center;
     text-decoration: none;
     font-size: 16px;
+    font-weight: 600;
     cursor: pointer;
+
+    transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
+.sign-in:hover {
+    background-color: #8a6fd0;
+}
+
+.sign-in:active {
+    transform: scale(0.97);
+}
+
+.sign-in.loading {
+    color: transparent;
+    pointer-events: none;
+    position: relative;
+}
+
+.sign-in.loading::after {
+    content: "";
+    position: absolute;
+
+    width: 16px;
+    height: 16px;
+
+    top: 50%;
+    left: 50%;
+    margin: -8px 0 0 -8px;
+
+    border: 2px solid white;
+    border-top-color: transparent;
+    border-radius: 50%;
+
+    animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 
+    ПОДВАЛ
+*/
 .footer {
     background-color: white;
     width: 100%;
@@ -194,7 +340,8 @@ body {
 /* для юзеров с выключенной анимацией следует оставить none */
 @media (prefers-reduced-motion: reduce) {
     .ticker-track {
-        animation: ticker-scroll 20s linear infinite;
+        /* animation: ticker-scroll 20s linear infinite; */
+        animation: none;
     }
 }
 
@@ -228,4 +375,31 @@ body {
 
 .footer-links a:hover {
     text-decoration: underline;
+}
+
+/* 
+    МЕДИА
+*/
+@media (max-width: 480px) {
+    .card {
+        width: 100%;
+        max-width: none;
+        padding: 20px;
+    }
+
+    .logo {
+        height: 40px;
+    }
+
+    .footer {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-links {
+        gap: 10px;
+    }
 }

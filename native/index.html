@@ -1,8 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
     <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
         <title>Форма входа</title>
         <link rel="stylesheet" href="styles.css">
+
+        <!-- Шрифты гугл -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     </head>
 
     <body>
@@ -11,21 +19,53 @@
         </header>
 
         <main class="main">
-            <div class="card">
-                <h4 class="card-header">Войти через соцсети</h4>
-                <button class="social">Войти через MAX</button>
-                <button class="social">Войти через ГосУслуги</button>
+            <div class="card" id="login-card">
+                <section class="social-login" aria-labelledby="social-login-heading">
+                    <h4 class="card-header" id="social-login-heading">Войти через соцсети</h4>
 
-                <h4 class="card-header">Вход</h4>
-                <input type="email" class="text-input" value="gtb.shield@ga.ng">
-                <input type="password" class="text-input" value="88888888">
-                <div>
-                    <label class="remember">
-                        <input type="checkbox" name="remember">
-                        Запомнить пароль?
-                    </label>
-                    <button class="sign-in">Войти</button>
-                </div>
+                    <button class="social">Войти через MAX</button>
+                    <button class="social">Войти через ГосУслуги</button>
+                </section>
+
+                <form class="login-form" id="login-form" novalidate>
+                    <h4 class="card-header">Вход</h4>
+
+                    <div class="field">
+                        <label for="email" class="visually-hidden">Электронная почта</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="text-input"
+                            placeholder="Электронная почта"
+                            autocomplete="email"
+                            required
+                            aria-required="true">
+                    </div>
+
+                    <div class="field">
+                        <label for="password" class="visually-hidden">Пароль</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="text-input"
+                            placeholder="Пароль"
+                            autocomplete="current-password"
+                            required
+                            aria-required="true"
+                            minlength="8">
+                    </div>
+
+                    <div class="form-row">
+                        <label class="remember">
+                            <input type="checkbox" name="remember" id="remember">
+                            Запомнить пароль?
+                        </label>
+
+                        <button type="submit" class="sign-in">Войти</button>
+                    </div>
+                </form>
             </div>
 
         </main>
