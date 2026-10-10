@@ -258,6 +258,20 @@ input[required] {
     transform: scale(1.05);
 }
 
+.form-message {
+    min-height: 18px;
+    font-size: 13px;
+    font-weight: 500
+}
+
+.form-message.error {
+    color: #e05353;
+}
+
+.form-message.success {
+    color: #2e9e4f;
+}
+
 .form-row {
     display: flex;
     flex-direction: column;
