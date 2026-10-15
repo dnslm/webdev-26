@@ -3,25 +3,50 @@ console.log("script.js подключен");
 const emailInput = document.getElementById("email");
 const passwordInput = document.getElementById("password");
 
-// функция проверки формата email
+
+// ============================================
+// ВАЛИДАЦИЯ
+// ============================================
+
+// именованная функция проверки формата email
 function isValidEmail(value) {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(value);
 }
 
-// функция валидация пароля
+// именованная функция валидация пароля
 // минимум 8 символов, хотя бы одна буква и одна цифра
 function isValidPassword(value) {
     const passwordPattern = /^(?=.*[A-Za-zА-Яа-яЁё])(?=.*\d).{8,}$/;
     return passwordPattern.test(value);
 }
 
+// проверка при уходе с поля
+emailInput.addEventListener("blur", () => {
+    setFieldState(emailInput, isValidEmail(emailInput.value.trim()));
+});
+
+passwordInput.addEventListener("blur", () => {
+    setFieldState(passwordInput, isValidPassword(passwordInput.value));
+});
+
+
+// ============================================
+// СООБЩЕНИЯ ПОЛЬЗОВАТЕЛЮ
+// ============================================
+
+function showMessage(text, type) {
+    formMessage.textContent = text;
+    formMessage.className = "form-message" + type;
+}
+
+
 // ============================================
 // ОБРАБОТЧИКИ СОБЫТИЙ
 // ============================================
 
 // срабатывает, когда пользователь покидает поле email (blur)
-// причина тряски?))
+// причина тряски
 emailInput.addEventListener("blur", () => {
     const value = emailInput.value.trim();
 
@@ -58,19 +83,16 @@ passwordInput.addEventListener("blur", () => {
     }
 });
 
+
 // ============================================
 // ПРОВЕРКА ЛОГИНА И ПАРОЛЯ (хардкод)
 // ============================================
+
 const correctEmail = "test@email.com";
 const correctPassword = "aboba6769";
 
 const loginForm = document.getElementById("login-form");
 const formMessage = document.getElementById("form-message");
-
-function showMessage(text, type) {
-    formMessage.textContent = text;
-    formMessage.className = "form-message" + type;
-}
 
 loginform.addEventListener("submit", (event) => {
     event.preventDefaunt(); // не дать перезагрузиться
@@ -96,11 +118,13 @@ loginform.addEventListener("submit", (event) => {
     }
 });
 
+
 // ============================================
 // ХРАНЕНИЕ ДАННЫХ (localStorage)
 // хранить пароль в открытом виде опасненько, но в задании написано про пару логин-пароль
 // ирл пароль на клиенте не хранят
 // ============================================
+
 const storageKey = "loginData";
 const rememberInput = document.getElementById("remember");
 
@@ -139,3 +163,15 @@ const restoreForm = () => {
 };
 
 restoreForm();
+
+
+// ============================================
+// ЭФФЕКТЫ
+// ============================================
+
+
+
+// ============================================
+// ОТПРАВКА ФОРМЫ
+// ============================================
+
