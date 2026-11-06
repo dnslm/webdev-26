@@ -492,13 +492,13 @@ input[required] {
 }
 
 @media (max-width: 768px) {
-    .footer-links {
+    .footer-nav {
         gap: 10px;
     }
 }
 
 /* 
-    КОНФЕТТИ
+    конфетти
 */
 .confetti {
     position: fixed;
@@ -514,7 +514,9 @@ input[required] {
     to { transform: translateY(105vh) rotate(720deg); }
 }
 
-/* Снегопад (пасхалка) */
+/* 
+    cнегопад (пасхалк)
+*/
 .snow {
     position: fixed;
     inset: 0;
