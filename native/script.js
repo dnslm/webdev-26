@@ -156,7 +156,7 @@ restoreForm();
 const prefersReducedMotion = () =>
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// Конфетти после успешного входа
+// конфетти после успешного входа
 function launchConfetti() {
     if (prefersReducedMotion()) return;
 
@@ -232,7 +232,7 @@ const CORRECT_EMAIL = "test@email.com";
 const CORRECT_PASSWORD = "abobaBebra1487";
 const LOGIN_DELAY_MS = 800; // имитация запроса к серверу
 
-// Включает/выключает состояние загрузки на кнопке
+// вкл/выкл состояние загрузки на кнопке
 const setLoading = (isLoading) => {
     signInButton.classList.toggle("loading", isLoading);
     signInButton.disabled = isLoading;
@@ -263,9 +263,9 @@ loginForm.addEventListener("submit", (event) => {
 
         if (email === CORRECT_EMAIL && password === CORRECT_PASSWORD) {
             if (rememberInput.checked) {
-                saveCredentials(email, password);
+                saveData(email, password);
             } else {
-                clearCredentials();
+                clearData();
             }
             showMessage("Вход выполнен!", "success");
             launchConfetti();
