@@ -1,14 +1,31 @@
+import type { UserData, MessageType } from "./types";
+
 console.log("script.js подключен");
 
 // ============================================
 // ССЫЛКИ НА DOM-ЭЛЕМЕНТЫ
 // ============================================
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
-const rememberInput = document.getElementById("remember");
-const loginForm = document.getElementById("login-form");
-const formMessage = document.getElementById("form-message");
+
+// ищет элемент по id и гарантирует его тип
+// если элемента нет или он другого типа, сразу бросает понятную ошибку
+function getElement<T extends HTMLElement>(id: string, type: new () => T): T {
+    const element = document.getElementById(id);
+    if (!(element instanceof type)) {
+        throw new Error(`Элемент #${id} не найден или имеет другой тип (ожидался ${type.name})`);
+    }
+    return element;
+}
+ 
+const emailInput = getElement("email", HTMLInputElement);
+const passwordInput = getElement("password", HTMLInputElement);
+const rememberInput = getElement("remember", HTMLInputElement);
+const loginForm = getElement("login-form", HTMLFormElement);
+const formMessage = getElement("form-message", HTMLElement);
+ 
 const signInButton = loginForm.querySelector(".sign-in");
+if (!(signInButton instanceof HTMLButtonElement)) {
+    throw new Error("Кнопка .sign-in не найдена");
+}
 
 
 // ============================================
@@ -16,21 +33,21 @@ const signInButton = loginForm.querySelector(".sign-in");
 // ============================================
 
 // именованная функция проверки формата email
-function isValidEmail(value) {
+function isValidEmail(value: string): boolean {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailPattern.test(value);
 }
 
 // именованная функция валидация пароля
 // минимум 8 символов, хотя бы одна буква и одна цифра
-function isValidPassword(value) {
+function isValidPassword(value: string): boolean {
     const passwordPattern = /^(?=.*[A-Za-zА-Яа-яЁё])(?=.*\d).{8,}$/;
     return passwordPattern.test(value);
 }
 
 // стрелочная функция
 // способ показать состояние поля (заменяет два одинаковых обработчика)
-const setFieldState = (input, isValid) => {
+const setFieldState = (input: HTMLInputElement, isValid: boolean): void => {
     input.classList.remove("valid", "invalid");
     input.setAttribute("aria-invalid", String(!isValid));
 
@@ -56,9 +73,15 @@ passwordInput.addEventListener("blur", () => {
 // СООБЩЕНИЯ ПОЛЬЗОВАТЕЛЮ
 // ============================================
 
-function showMessage(text, type) {
+function showMessage(text: string, type: MessageType): void {
     formMessage.textContent = text;
     formMessage.className = "form-message " + type;
+}
+
+// убирает сообщение (раньше для этого вызывали showMessage("", ""))
+function clearMessage(): void {
+    formMessage.textContent = "";
+    formMessage.className = "form-message";
 }
 
 
@@ -115,29 +138,44 @@ const STORAGE_KEY = "loginData";
 
 // сохр логин и пароль
 // localStorage хранит только строки, поэтрму JSON
-function saveData(email, password) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({email, password}));
+function saveData(email: string, password: string): void {
+    const data: UserData = { email, password };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
-function clearData() {
+function clearData(): void {
     localStorage.removeItem(STORAGE_KEY);
 }
 
+// проверка формы данных: из localStorage может прийти что угодно
+// (например, пользователь вручную поправил значение в DevTools)
+function isData(value: unknown): value is UserData {
+    return (
+        typeof value === "object" &&
+        value !== null &&
+        "email" in value &&
+        "password" in value &&
+        typeof value.email === "string" &&
+        typeof value.password === "string"
+    );
+}
+ 
 // читает сохранённую пару
 // если ничего нет или данные повреждены, вернёт null
-function loadData() {
+function loadData(): UserData | null {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
-
+ 
     try {
-        return JSON.parse(raw);
+        const parsed: unknown = JSON.parse(raw);
+        return isData(parsed) ? parsed : null;
     } catch {
         return null;
     }
 }
 
 // подставляет сохранённые данные в форму при загрузке страницы
-const restoreForm = () => {
+const restoreForm = (): void => {
     const saved = loadData();
     if (!saved) return;
 
@@ -153,11 +191,11 @@ restoreForm();
 // ============================================
 // ЭФФЕКТЫ
 // ============================================
-const prefersReducedMotion = () =>
+const prefersReducedMotion = (): boolean =>
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-// Конфетти после успешного входа
-function launchConfetti() {
+// конфетти после успешного входа
+function launchConfetti(): void {
     if (prefersReducedMotion()) return;
 
     const colors = ["#9a80db", "#f5b942", "#4caf50", "#e05353", "#4aa8ff"];
@@ -167,7 +205,8 @@ function launchConfetti() {
         piece.className = "confetti";
         piece.setAttribute("aria-hidden", "true");
         piece.style.left = Math.random() * 100 + "vw";
-        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        // ?? нужен из-за noUncheckedIndexedAccess: элемент массива может быть undefined
+        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)] ?? "#9a80db";
         piece.style.animationDuration = 1.5 + Math.random() * 1.5 + "s";
         piece.style.animationDelay = Math.random() * 0.3 + "s";
         piece.addEventListener("animationend", () => piece.remove());
@@ -178,9 +217,9 @@ function launchConfetti() {
 // бебра код включает и выключает снегопад
 const SECRET_CODE = ["KeyB", "KeyE", "KeyB", "KeyR", "KeyA"];
 let secretProgress = 0;
-let snowContainer = null;
+let snowContainer: HTMLDivElement | null = null;
 
-const toggleSnow = () => {
+const toggleSnow = (): void => {
     // повторный ввод кода выключает снег
     if (snowContainer) {
         snowContainer.remove();
@@ -189,10 +228,10 @@ const toggleSnow = () => {
     }
     if (prefersReducedMotion()) return;
 
-    snowContainer = document.createElement("div");
-    snowContainer.className = "snow";
-    snowContainer.setAttribute("aria-hidden", "true");
-
+    const container = document.createElement("div");
+    container.className = "snow";
+    container.setAttribute("aria-hidden", "true");
+ 
     for (let i = 0; i < 40; i++) {
         const flake = document.createElement("span");
         flake.className = "snowflake";
@@ -201,16 +240,18 @@ const toggleSnow = () => {
         flake.style.fontSize = 10 + Math.random() * 16 + "px";
         flake.style.animationDuration = 6 + Math.random() * 6 + "s";
         flake.style.animationDelay = -Math.random() * 10 + "s";
-        snowContainer.appendChild(flake);
+        container.appendChild(flake);
     }
-
-    document.body.appendChild(snowContainer);
+ 
+    document.body.appendChild(container);
+    snowContainer = container;
     showMessage("пасхалко🥶", "success");
 };
 
 document.addEventListener("keydown", (event) => {
     // не срабатываем, пока пользователь печатает в поле формы
-    if (event.target.matches("input, textarea")) return;
+    // event.target может быть null или не элементом, поетому сначала проверяем instanceof
+    if (event.target instanceof Element && event.target.matches("input, textarea")) return;
 
     if (event.code === SECRET_CODE[secretProgress]) {
         secretProgress++;
@@ -232,8 +273,8 @@ const CORRECT_EMAIL = "test@email.com";
 const CORRECT_PASSWORD = "abobaBebra1487";
 const LOGIN_DELAY_MS = 800; // имитация запроса к серверу
 
-// Включает/выключает состояние загрузки на кнопке
-const setLoading = (isLoading) => {
+// вкл/выкл состояние загрузки на кнопке
+const setLoading = (isLoading: boolean): void => {
     signInButton.classList.toggle("loading", isLoading);
     signInButton.disabled = isLoading;
     signInButton.setAttribute("aria-busy", String(isLoading));
@@ -255,7 +296,7 @@ loginForm.addEventListener("submit", (event) => {
         return;
     }
 
-    showMessage("", "");
+    clearMessage();
     setLoading(true);
 
     setTimeout(() => {
@@ -263,9 +304,9 @@ loginForm.addEventListener("submit", (event) => {
 
         if (email === CORRECT_EMAIL && password === CORRECT_PASSWORD) {
             if (rememberInput.checked) {
-                saveCredentials(email, password);
+                saveData(email, password);
             } else {
-                clearCredentials();
+                clearData();
             }
             showMessage("Вход выполнен!", "success");
             launchConfetti();
