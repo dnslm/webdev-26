@@ -9,13 +9,19 @@
     "yarn": "4.18.1"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.6.6",
+    "eslint": "^10.14.0",
     "typescript": "^6.0.2",
+    "typescript-eslint": "^8.72.1",
     "vite": "^8.3.6"
   },
   "scripts": {
     "serve": "vite",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   }
 }
