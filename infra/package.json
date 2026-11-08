@@ -9,9 +9,13 @@
     "yarn": "4.18.1"
   },
   "devDependencies": {
-    "typescript": "^6.0.2"
+    "typescript": "^6.0.2",
+    "vite": "^8.3.6"
   },
   "scripts": {
+    "serve": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
     "typecheck": "tsc --noEmit"
   }
 }
