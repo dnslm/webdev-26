@@ -55,7 +55,7 @@ const setFieldState = (input: HTMLInputElement, isValid: boolean): void => {
         input.classList.add("valid");
     } else {
         // класс добавляется в следующем кадре, чтобы анимация тряски запускалась заново
-        requestAnimationFrame(() => input.classList.add("invalid"));
+        requestAnimationFrame(() => { input.classList.add("invalid"); });
     }
 };
 
@@ -209,7 +209,7 @@ function launchConfetti(): void {
         piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)] ?? "#9a80db";
         piece.style.animationDuration = 1.5 + Math.random() * 1.5 + "s";
         piece.style.animationDelay = Math.random() * 0.3 + "s";
-        piece.addEventListener("animationend", () => piece.remove());
+        piece.addEventListener("animationend", () => { piece.remove(); });
         document.body.appendChild(piece);
     }
 }
