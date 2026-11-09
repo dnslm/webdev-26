@@ -194,6 +194,10 @@ restoreForm();
 const prefersReducedMotion = (): boolean =>
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+// число + единица измерения -> строка для CSS
+// (явное преобразование нужно из-за правила restrict-plus-operands)
+const toCss = (value: number, unit: string): string => `${value.toFixed(2)}${unit}`;
+
 // конфетти после успешного входа
 function launchConfetti(): void {
     if (prefersReducedMotion()) return;
@@ -204,11 +208,11 @@ function launchConfetti(): void {
         const piece = document.createElement("span");
         piece.className = "confetti";
         piece.setAttribute("aria-hidden", "true");
-        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.left = toCss(Math.random() * 100, "vw");
         // ?? нужен из-за noUncheckedIndexedAccess: элемент массива может быть undefined
         piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)] ?? "#9a80db";
-        piece.style.animationDuration = 1.5 + Math.random() * 1.5 + "s";
-        piece.style.animationDelay = Math.random() * 0.3 + "s";
+        piece.style.animationDuration = toCss(1.5 + Math.random() * 1.5, "s");
+        piece.style.animationDelay = toCss(Math.random() * 0.3, "s");
         piece.addEventListener("animationend", () => { piece.remove(); });
         document.body.appendChild(piece);
     }
@@ -236,10 +240,10 @@ const toggleSnow = (): void => {
         const flake = document.createElement("span");
         flake.className = "snowflake";
         flake.textContent = "❄";
-        flake.style.left = Math.random() * 100 + "vw";
-        flake.style.fontSize = 10 + Math.random() * 16 + "px";
-        flake.style.animationDuration = 6 + Math.random() * 6 + "s";
-        flake.style.animationDelay = -Math.random() * 10 + "s";
+        flake.style.left = toCss(Math.random() * 100, "vw");
+        flake.style.fontSize = toCss(10 + Math.random() * 16, "px");
+        flake.style.animationDuration = toCss(6 + Math.random() * 6, "s");
+        flake.style.animationDelay = toCss(-Math.random() * 10, "s");
         container.appendChild(flake);
     }
  
