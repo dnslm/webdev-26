@@ -2,6 +2,7 @@
 import eslint from "@eslint/js";
 import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
+import eslintConfigPrettier from "eslint-config-prettier/flat";
 
 export default defineConfig(
     // НЕ проверяем результат сборки и служебные папки Yarn
@@ -29,4 +30,7 @@ export default defineConfig(
         files: ["**/*.js", "**/*.mjs"],
         extends: [tseslint.configs.disableTypeChecked],
     },
+
+    // отключает правила ESLint, которые спорят с Prettier
+    eslintConfigPrettier,
 );
