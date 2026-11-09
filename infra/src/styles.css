@@ -7,7 +7,13 @@
     box-sizing: border-box;
 }
 
-h1, h2, h3, h4, h5, h6, p {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
     margin: 0;
     font-family: inherit;
     font-weight: inherit;
@@ -15,7 +21,8 @@ h1, h2, h3, h4, h5, h6, p {
     color: inherit;
 }
 
-button, input {
+button,
+input {
     font-family: inherit;
     color: inherit;
 }
@@ -31,7 +38,7 @@ body {
     font-size: 14px;
     font-weight: 400;
     line-height: 1.5;
-    
+
     justify-content: center;
     align-items: center;
 
@@ -167,7 +174,10 @@ img {
     font-weight: 500;
     cursor: pointer;
 
-    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    transition:
+        background-color 0.2s ease,
+        transform 0.1s ease,
+        box-shadow 0.2s ease;
 }
 
 .social:hover {
@@ -204,7 +214,9 @@ img {
     font-size: 13px;
     cursor: text;
 
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 
 .text-input:focus {
@@ -227,11 +239,22 @@ input[required] {
 }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20% { transform: translateX(-6px); }
-    40% { transform: translateX(6px); }
-    60% { transform: translateX(-4px); }
-    80% { transform: translateX(4px); }
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+    20% {
+        transform: translateX(-6px);
+    }
+    40% {
+        transform: translateX(6px);
+    }
+    60% {
+        transform: translateX(-4px);
+    }
+    80% {
+        transform: translateX(4px);
+    }
 }
 
 .remember {
@@ -260,7 +283,7 @@ input[required] {
 .form-message {
     min-height: 18px;
     font-size: 13px;
-    font-weight: 500
+    font-weight: 500;
 }
 
 .form-message.error {
@@ -299,7 +322,9 @@ input[required] {
     font-weight: 600;
     cursor: pointer;
 
-    transition: background-color 0.2s ease, transform 0.1s ease;
+    transition:
+        background-color 0.2s ease,
+        transform 0.1s ease;
 }
 
 .sign-in:hover {
@@ -335,7 +360,9 @@ input[required] {
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* 
@@ -353,7 +380,7 @@ input[required] {
     align-items: center;
     flex-wrap: wrap;
     gap: 8px;
-    
+
     padding: 16px 8px;
     /* border-top: 1px solid #e0dede; */
 }
@@ -382,8 +409,12 @@ input[required] {
 }
 
 @keyframes ticker-scroll {
-    from { transform: translateX(0); }
-    to   { transform: translateX(-50%); }
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
 }
 
 .ticker:hover .ticker-track {
@@ -415,7 +446,7 @@ input[required] {
     flex-wrap: wrap;
     gap: 20px;
 
-    width: 100%; 
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
 }
@@ -423,7 +454,6 @@ input[required] {
 .footer-nav a {
     color: rgb(111, 39, 228);
     text-decoration: none;
-    
 }
 
 .footer-nav a:hover {
@@ -446,7 +476,9 @@ input[required] {
     padding: 6px 10px;
     border-radius: 20px;
 
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
 }
 
 .footer-link:hover {
@@ -511,7 +543,9 @@ input[required] {
 }
 
 @keyframes confetti-fall {
-    to { transform: translateY(105vh) rotate(720deg); }
+    to {
+        transform: translateY(105vh) rotate(720deg);
+    }
 }
 
 /* 
@@ -534,5 +568,7 @@ input[required] {
 }
 
 @keyframes snow-fall {
-    to { transform: translateY(105vh) translateX(30px) rotate(360deg); }
+    to {
+        transform: translateY(105vh) translateX(30px) rotate(360deg);
+    }
 }

@@ -15,18 +15,17 @@ function getElement<T extends HTMLElement>(id: string, type: new () => T): T {
     }
     return element;
 }
- 
+
 const emailInput = getElement("email", HTMLInputElement);
 const passwordInput = getElement("password", HTMLInputElement);
 const rememberInput = getElement("remember", HTMLInputElement);
 const loginForm = getElement("login-form", HTMLFormElement);
 const formMessage = getElement("form-message", HTMLElement);
- 
+
 const signInButton = loginForm.querySelector(".sign-in");
 if (!(signInButton instanceof HTMLButtonElement)) {
     throw new Error("Кнопка .sign-in не найдена");
 }
-
 
 // ============================================
 // ВАЛИДАЦИЯ
@@ -55,7 +54,9 @@ const setFieldState = (input: HTMLInputElement, isValid: boolean): void => {
         input.classList.add("valid");
     } else {
         // класс добавляется в следующем кадре, чтобы анимация тряски запускалась заново
-        requestAnimationFrame(() => { input.classList.add("invalid"); });
+        requestAnimationFrame(() => {
+            input.classList.add("invalid");
+        });
     }
 };
 
@@ -67,7 +68,6 @@ emailInput.addEventListener("blur", () => {
 passwordInput.addEventListener("blur", () => {
     setFieldState(passwordInput, isValidPassword(passwordInput.value));
 });
-
 
 // ============================================
 // СООБЩЕНИЯ ПОЛЬЗОВАТЕЛЮ
@@ -83,7 +83,6 @@ function clearMessage(): void {
     formMessage.textContent = "";
     formMessage.className = "form-message";
 }
-
 
 // ============================================
 // ОБРАБОТЧИКИ СОБЫТИЙ
@@ -127,7 +126,6 @@ passwordInput.addEventListener("blur", () => {
     }
 });
 
-
 // ============================================
 // ХРАНЕНИЕ ДАННЫХ (localStorage)
 // хранить пароль в открытом виде опасненько, но в задании написано про пару логин-пароль
@@ -159,13 +157,13 @@ function isData(value: unknown): value is UserData {
         typeof value.password === "string"
     );
 }
- 
+
 // читает сохранённую пару
 // если ничего нет или данные повреждены, вернёт null
 function loadData(): UserData | null {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return null;
- 
+
     try {
         const parsed: unknown = JSON.parse(raw);
         return isData(parsed) ? parsed : null;
@@ -186,7 +184,6 @@ const restoreForm = (): void => {
 };
 
 restoreForm();
-
 
 // ============================================
 // ЭФФЕКТЫ
@@ -210,10 +207,13 @@ function launchConfetti(): void {
         piece.setAttribute("aria-hidden", "true");
         piece.style.left = toCss(Math.random() * 100, "vw");
         // ?? нужен из-за noUncheckedIndexedAccess: элемент массива может быть undefined
-        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)] ?? "#9a80db";
+        piece.style.backgroundColor =
+            colors[Math.floor(Math.random() * colors.length)] ?? "#9a80db";
         piece.style.animationDuration = toCss(1.5 + Math.random() * 1.5, "s");
         piece.style.animationDelay = toCss(Math.random() * 0.3, "s");
-        piece.addEventListener("animationend", () => { piece.remove(); });
+        piece.addEventListener("animationend", () => {
+            piece.remove();
+        });
         document.body.appendChild(piece);
     }
 }
@@ -235,7 +235,7 @@ const toggleSnow = (): void => {
     const container = document.createElement("div");
     container.className = "snow";
     container.setAttribute("aria-hidden", "true");
- 
+
     for (let i = 0; i < 40; i++) {
         const flake = document.createElement("span");
         flake.className = "snowflake";
@@ -246,7 +246,7 @@ const toggleSnow = (): void => {
         flake.style.animationDelay = toCss(-Math.random() * 10, "s");
         container.appendChild(flake);
     }
- 
+
     document.body.appendChild(container);
     snowContainer = container;
     showMessage("пасхалко🥶", "success");
@@ -268,7 +268,6 @@ document.addEventListener("keydown", (event) => {
         secretProgress = event.code === SECRET_CODE[0] ? 1 : 0;
     }
 });
-
 
 // ============================================
 // ОТПРАВКА ФОРМЫ (хардкод)
