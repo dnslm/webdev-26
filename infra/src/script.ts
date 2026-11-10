@@ -1,6 +1,9 @@
-import type { UserData, MessageType } from "./types";
+import { checkData } from "./auth";
+import { clearData, loadData, saveData } from "./storage";
+import type { MessageType } from "./types";
+import { isValidEmail, isValidPassword } from "./validation";
 
-console.log("script.js подключен");
+console.log("script.ts подключен");
 
 // ============================================
 // ССЫЛКИ НА DOM-ЭЛЕМЕНТЫ
@@ -15,35 +18,21 @@ function getElement<T extends HTMLElement>(id: string, type: new () => T): T {
     }
     return element;
 }
- 
+
 const emailInput = getElement("email", HTMLInputElement);
 const passwordInput = getElement("password", HTMLInputElement);
 const rememberInput = getElement("remember", HTMLInputElement);
 const loginForm = getElement("login-form", HTMLFormElement);
 const formMessage = getElement("form-message", HTMLElement);
- 
+
 const signInButton = loginForm.querySelector(".sign-in");
 if (!(signInButton instanceof HTMLButtonElement)) {
     throw new Error("Кнопка .sign-in не найдена");
 }
 
-
 // ============================================
 // ВАЛИДАЦИЯ
 // ============================================
-
-// именованная функция проверки формата email
-function isValidEmail(value: string): boolean {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(value);
-}
-
-// именованная функция валидация пароля
-// минимум 8 символов, хотя бы одна буква и одна цифра
-function isValidPassword(value: string): boolean {
-    const passwordPattern = /^(?=.*[A-Za-zА-Яа-яЁё])(?=.*\d).{8,}$/;
-    return passwordPattern.test(value);
-}
 
 // стрелочная функция
 // способ показать состояние поля (заменяет два одинаковых обработчика)
@@ -55,7 +44,9 @@ const setFieldState = (input: HTMLInputElement, isValid: boolean): void => {
         input.classList.add("valid");
     } else {
         // класс добавляется в следующем кадре, чтобы анимация тряски запускалась заново
-        requestAnimationFrame(() => input.classList.add("invalid"));
+        requestAnimationFrame(() => {
+            input.classList.add("invalid");
+        });
     }
 };
 
@@ -67,7 +58,6 @@ emailInput.addEventListener("blur", () => {
 passwordInput.addEventListener("blur", () => {
     setFieldState(passwordInput, isValidPassword(passwordInput.value));
 });
-
 
 // ============================================
 // СООБЩЕНИЯ ПОЛЬЗОВАТЕЛЮ
@@ -83,7 +73,6 @@ function clearMessage(): void {
     formMessage.textContent = "";
     formMessage.className = "form-message";
 }
-
 
 // ============================================
 // ОБРАБОТЧИКИ СОБЫТИЙ
@@ -127,52 +116,11 @@ passwordInput.addEventListener("blur", () => {
     }
 });
 
-
 // ============================================
 // ХРАНЕНИЕ ДАННЫХ (localStorage)
 // хранить пароль в открытом виде опасненько, но в задании написано про пару логин-пароль
 // ирл пароль на клиенте не хранят
 // ============================================
-
-const STORAGE_KEY = "loginData";
-
-// сохр логин и пароль
-// localStorage хранит только строки, поэтрму JSON
-function saveData(email: string, password: string): void {
-    const data: UserData = { email, password };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-function clearData(): void {
-    localStorage.removeItem(STORAGE_KEY);
-}
-
-// проверка формы данных: из localStorage может прийти что угодно
-// (например, пользователь вручную поправил значение в DevTools)
-function isData(value: unknown): value is UserData {
-    return (
-        typeof value === "object" &&
-        value !== null &&
-        "email" in value &&
-        "password" in value &&
-        typeof value.email === "string" &&
-        typeof value.password === "string"
-    );
-}
- 
-// читает сохранённую пару
-// если ничего нет или данные повреждены, вернёт null
-function loadData(): UserData | null {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
- 
-    try {
-        const parsed: unknown = JSON.parse(raw);
-        return isData(parsed) ? parsed : null;
-    } catch {
-        return null;
-    }
-}
 
 // подставляет сохранённые данные в форму при загрузке страницы
 const restoreForm = (): void => {
@@ -187,12 +135,15 @@ const restoreForm = (): void => {
 
 restoreForm();
 
-
 // ============================================
 // ЭФФЕКТЫ
 // ============================================
 const prefersReducedMotion = (): boolean =>
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// число + единица измерения -> строка для CSS
+// (явное преобразование нужно из-за правила restrict-plus-operands)
+const toCss = (value: number, unit: string): string => `${value.toFixed(2)}${unit}`;
 
 // конфетти после успешного входа
 function launchConfetti(): void {
@@ -204,12 +155,15 @@ function launchConfetti(): void {
         const piece = document.createElement("span");
         piece.className = "confetti";
         piece.setAttribute("aria-hidden", "true");
-        piece.style.left = Math.random() * 100 + "vw";
+        piece.style.left = toCss(Math.random() * 100, "vw");
         // ?? нужен из-за noUncheckedIndexedAccess: элемент массива может быть undefined
-        piece.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)] ?? "#9a80db";
-        piece.style.animationDuration = 1.5 + Math.random() * 1.5 + "s";
-        piece.style.animationDelay = Math.random() * 0.3 + "s";
-        piece.addEventListener("animationend", () => piece.remove());
+        piece.style.backgroundColor =
+            colors[Math.floor(Math.random() * colors.length)] ?? "#9a80db";
+        piece.style.animationDuration = toCss(1.5 + Math.random() * 1.5, "s");
+        piece.style.animationDelay = toCss(Math.random() * 0.3, "s");
+        piece.addEventListener("animationend", () => {
+            piece.remove();
+        });
         document.body.appendChild(piece);
     }
 }
@@ -231,18 +185,18 @@ const toggleSnow = (): void => {
     const container = document.createElement("div");
     container.className = "snow";
     container.setAttribute("aria-hidden", "true");
- 
+
     for (let i = 0; i < 40; i++) {
         const flake = document.createElement("span");
         flake.className = "snowflake";
         flake.textContent = "❄";
-        flake.style.left = Math.random() * 100 + "vw";
-        flake.style.fontSize = 10 + Math.random() * 16 + "px";
-        flake.style.animationDuration = 6 + Math.random() * 6 + "s";
-        flake.style.animationDelay = -Math.random() * 10 + "s";
+        flake.style.left = toCss(Math.random() * 100, "vw");
+        flake.style.fontSize = toCss(10 + Math.random() * 16, "px");
+        flake.style.animationDuration = toCss(6 + Math.random() * 6, "s");
+        flake.style.animationDelay = toCss(-Math.random() * 10, "s");
         container.appendChild(flake);
     }
- 
+
     document.body.appendChild(container);
     snowContainer = container;
     showMessage("пасхалко🥶", "success");
@@ -265,12 +219,10 @@ document.addEventListener("keydown", (event) => {
     }
 });
 
-
 // ============================================
 // ОТПРАВКА ФОРМЫ (хардкод)
 // ============================================
-const CORRECT_EMAIL = "test@email.com";
-const CORRECT_PASSWORD = "abobaBebra1487";
+
 const LOGIN_DELAY_MS = 800; // имитация запроса к серверу
 
 // вкл/выкл состояние загрузки на кнопке
@@ -302,7 +254,7 @@ loginForm.addEventListener("submit", (event) => {
     setTimeout(() => {
         setLoading(false);
 
-        if (email === CORRECT_EMAIL && password === CORRECT_PASSWORD) {
+        if (checkData(email, password)) {
             if (rememberInput.checked) {
                 saveData(email, password);
             } else {
