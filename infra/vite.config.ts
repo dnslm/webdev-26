@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig } from "vitest/config"; // другой импорт, добавление тестов
 
 export default defineConfig({
     root: "src",
@@ -12,5 +12,9 @@ export default defineConfig({
     build: {
         outDir: "../dist",
         emptyOutDir: true,
+    },
+    test: {
+        // jsdom даёт тестам браузерные API (localStorage, document и тд)
+        environment: "jsdom",
     },
 });
