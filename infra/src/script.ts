@@ -1,4 +1,7 @@
-import type { UserData, MessageType } from "./types";
+import { checkData } from "./auth";
+import { clearData, loadData, saveData } from "./storage";
+import type { MessageType } from "./types";
+import { isValidEmail, isValidPassword } from "./validation";
 
 console.log("script.js подключен");
 
@@ -30,19 +33,6 @@ if (!(signInButton instanceof HTMLButtonElement)) {
 // ============================================
 // ВАЛИДАЦИЯ
 // ============================================
-
-// именованная функция проверки формата email
-function isValidEmail(value: string): boolean {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailPattern.test(value);
-}
-
-// именованная функция валидация пароля
-// минимум 8 символов, хотя бы одна буква и одна цифра
-function isValidPassword(value: string): boolean {
-    const passwordPattern = /^(?=.*[A-Za-zА-Яа-яЁё])(?=.*\d).{8,}$/;
-    return passwordPattern.test(value);
-}
 
 // стрелочная функция
 // способ показать состояние поля (заменяет два одинаковых обработчика)
@@ -131,46 +121,6 @@ passwordInput.addEventListener("blur", () => {
 // хранить пароль в открытом виде опасненько, но в задании написано про пару логин-пароль
 // ирл пароль на клиенте не хранят
 // ============================================
-
-const STORAGE_KEY = "loginData";
-
-// сохр логин и пароль
-// localStorage хранит только строки, поэтрму JSON
-function saveData(email: string, password: string): void {
-    const data: UserData = { email, password };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-
-function clearData(): void {
-    localStorage.removeItem(STORAGE_KEY);
-}
-
-// проверка формы данных: из localStorage может прийти что угодно
-// (например, пользователь вручную поправил значение в DevTools)
-function isData(value: unknown): value is UserData {
-    return (
-        typeof value === "object" &&
-        value !== null &&
-        "email" in value &&
-        "password" in value &&
-        typeof value.email === "string" &&
-        typeof value.password === "string"
-    );
-}
-
-// читает сохранённую пару
-// если ничего нет или данные повреждены, вернёт null
-function loadData(): UserData | null {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return null;
-
-    try {
-        const parsed: unknown = JSON.parse(raw);
-        return isData(parsed) ? parsed : null;
-    } catch {
-        return null;
-    }
-}
 
 // подставляет сохранённые данные в форму при загрузке страницы
 const restoreForm = (): void => {
@@ -272,8 +222,7 @@ document.addEventListener("keydown", (event) => {
 // ============================================
 // ОТПРАВКА ФОРМЫ (хардкод)
 // ============================================
-const CORRECT_EMAIL = "test@email.com";
-const CORRECT_PASSWORD = "abobaBebra1487";
+
 const LOGIN_DELAY_MS = 800; // имитация запроса к серверу
 
 // вкл/выкл состояние загрузки на кнопке
@@ -305,7 +254,7 @@ loginForm.addEventListener("submit", (event) => {
     setTimeout(() => {
         setLoading(false);
 
-        if (email === CORRECT_EMAIL && password === CORRECT_PASSWORD) {
+        if (checkData(email, password)) {
             if (rememberInput.checked) {
                 saveData(email, password);
             } else {
