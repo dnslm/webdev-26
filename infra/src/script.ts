@@ -3,7 +3,7 @@ import { clearData, loadData, saveData } from "./storage";
 import type { MessageType } from "./types";
 import { isValidEmail, isValidPassword } from "./validation";
 
-console.log("script.js подключен");
+console.log("script.ts подключен");
 
 // ============================================
 // ССЫЛКИ НА DOM-ЭЛЕМЕНТЫ
