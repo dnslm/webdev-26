@@ -4,7 +4,7 @@ export const CounterButton = () => {
     const [count, setCount] = useState<number>(0);
 
     let myCount = 0;
-    let incMyCount = () => myCount++;
+    const incMyCount = () => myCount++;
 
     return <>
         <button
@@ -22,4 +22,5 @@ export const CounterButton = () => {
         >
           (my code) Count is {myCount}
         </button>
-}
+    </>;
+};
