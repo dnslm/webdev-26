@@ -1,11 +1,16 @@
-type TextInputProps = {
-    type: "text" | "password";
-    onChange: (value: string) => void;
-};
+import type { ChangeEvent } from "react";
 
-export const TextInput: React.FC = ({ type, onChange }) => {
-    const handeInputChange = (e) => {
-        onChange(e.target.value);
+interface TextInputProps {
+    id: string;
+    type: "text" | "password";
+    value: string;
+    onChange: (value: string) => void;
+}
+
+export function TextInput({ id, type, value, onChange }: TextInputProps) {
+    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+        onChange(event.target.value);
     };
-    return <input type={type} onChange={onChange}></input>;
-};
+
+    return <input id={id} type={type} value={value} onChange={handleInputChange} />;
+}
