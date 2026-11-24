@@ -1,0 +1,21 @@
+.snow {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 50;
+}
+
+.flake {
+    position: absolute;
+    top: -2em;
+    color: #8ab4f8;
+    opacity: 0.85;
+    animation: fall linear infinite;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(105vh) translateX(30px) rotate(360deg);
+    }
+}

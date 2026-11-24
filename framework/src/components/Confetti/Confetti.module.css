@@ -1,0 +1,21 @@
+.confetti {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 100;
+}
+
+.piece {
+    position: absolute;
+    top: -16px;
+    width: 8px;
+    height: 14px;
+    animation: fall 2s linear forwards;
+}
+
+@keyframes fall {
+    to {
+        transform: translateY(105vh) rotate(720deg);
+    }
+}
