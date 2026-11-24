@@ -1,0 +1,43 @@
+.header {
+    background-color: white;
+    width: 100%;
+
+    position: sticky;
+    top: 0;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: left;
+    align-items: center;
+
+    padding: 12px 24px;
+}
+
+.logoLink {
+    display: inline-flex;
+    align-items: center;
+
+    transition: opacity 0.2s ease;
+}
+
+.logoLink:hover {
+    opacity: 0.8;
+}
+
+.logoLink:focus-visible {
+    outline: 2px solid #9a80db;
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.logo {
+    height: 70px;
+    width: auto;
+    display: block;
+}
+
+@media (max-width: 480px) {
+    .logo {
+        height: 40px;
+    }
+}

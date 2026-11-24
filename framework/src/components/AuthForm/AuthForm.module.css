@@ -1,0 +1,12 @@
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.row {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 12px;
+}
