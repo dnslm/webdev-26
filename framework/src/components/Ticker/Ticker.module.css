@@ -1,0 +1,39 @@
+.ticker {
+    position: relative;
+    flex: 0 0 100%;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.track {
+    display: flex;
+    width: max-content;
+    animation: ticker-scroll 20s linear infinite;
+}
+
+.group {
+    display: flex;
+    flex-shrink: 0;
+}
+
+.item {
+    padding-right: 48px;
+    color: rgb(25, 24, 24);
+    font-size: 14px;
+}
+
+@keyframes ticker-scroll {
+    from {
+        transform: translateX(0);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
+
+/* для пользователей с отключёнными анимациями прокрутка выключена */
+@media (prefers-reduced-motion: reduce) {
+    .track {
+        animation: none;
+    }
+}

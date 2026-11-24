@@ -1,0 +1,22 @@
+.checkbox {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+
+    font-weight: 400;
+}
+
+.checkbox input {
+    width: 18px;
+    height: 18px;
+    margin: 2px;
+
+    accent-color: #9a80db;
+
+    transition: transform 0.15s ease;
+}
+
+.checkbox input:checked {
+    transform: scale(1.05);
+}

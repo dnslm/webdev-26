@@ -1,0 +1,13 @@
+.message {
+    min-height: 18px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.error {
+    color: #e05353;
+}
+
+.success {
+    color: #2e9e4f;
+}
