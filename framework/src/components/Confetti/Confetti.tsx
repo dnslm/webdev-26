@@ -17,24 +17,23 @@ interface Piece {
     delay: number;
 }
 
-// «случайные» значения выводятся из номера кусочка, а не из Math.random:
-// так отрисовка остаётся чистой (одни и те же данные дают один и тот же результат),
-// а конфетти всё равно выглядит разбросанным
+// диапазоны те же, что в native-версии: положение и цвет выбираются случайно,
+// длительность падения — от 1,5 до 3 секунд, задержка — до 0,3 секунды
 function createPieces(count: number): Piece[] {
     return Array.from({ length: count }, (_, index) => ({
         id: index,
-        left: (index * 37) % 100,
+        left: Math.random() * 100,
         // ?? нужен из-за noUncheckedIndexedAccess: элемент массива может быть undefined
-        color: COLORS[index % COLORS.length] ?? "#9a80db",
-        duration: 1.5 + ((index * 13) % 15) / 10,
-        delay: ((index * 7) % 4) / 10,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)] ?? "#9a80db",
+        duration: 1.5 + Math.random() * 1.5,
+        delay: Math.random() * 0.3,
     }));
 }
 
-const PIECES = createPieces(PIECE_COUNT);
-
 export function Confetti() {
     const isReducedMotion = useReducedMotion();
+    // кусочки создаются один раз при каждом показе конфетти, как в native-версии
+    const [pieces] = useState(() => createPieces(PIECE_COUNT));
     const [isVisible, setIsVisible] = useState(true);
 
     useEffect(() => {
@@ -51,7 +50,7 @@ export function Confetti() {
 
     return (
         <div className={styles["confetti"]} aria-hidden="true">
-            {PIECES.map((piece) => (
+            {pieces.map((piece) => (
                 <span
                     key={piece.id}
                     className={styles["piece"]}
