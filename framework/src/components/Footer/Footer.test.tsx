@@ -12,7 +12,7 @@ describe("Footer", () => {
         ).toBeGreaterThan(0);
     });
 
-    it("содержит навигацию «Контакты» с тремя ссылками", () => {
+    it("содержит навигацию контакты с тремя ссылками", () => {
         render(<Footer />);
         const nav = screen.getByRole("navigation", { name: "Контакты" });
 

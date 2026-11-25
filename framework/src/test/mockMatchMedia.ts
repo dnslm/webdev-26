@@ -1,6 +1,6 @@
 import { vi } from "vitest";
 
-// подменяет window.matchMedia: позволяет задать, включён ли режим «уменьшить анимацию»,
+// подменяет window.matchMedia позволяет задать, включён ли режим без анимок,
 // и переключить его прямо во время теста
 export function mockMatchMedia(initialMatches: boolean) {
     let matches = initialMatches;

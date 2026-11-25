@@ -1,4 +1,4 @@
-// jsdom не реализует AnimationEvent, а React DOM проверяет его наличие при загрузке:
+// jsdom не реализует AnimationEvent, а React DOM проверяет его наличие при загрузке
 // без полифила обработчик onAnimationEnd вешается на webkitAnimationEnd,
 // и fireEvent.animationEnd не срабатывает.
 class AnimationEventPolyfill extends Event {

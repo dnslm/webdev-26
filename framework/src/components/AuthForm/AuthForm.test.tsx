@@ -13,7 +13,7 @@ const passwordField = () => screen.getByLabelText("Пароль");
 const rememberCheckbox = () => screen.getByRole("checkbox", { name: "Запомнить пароль?" });
 const submitButton = () => screen.getByRole("button", { name: "Войти" });
 
-// пользователь, который «ждёт» вместе с поддельными таймерами
+// пользователь который ждёт вместе с фейк таймерами
 function createUser() {
     return userEvent.setup({
         advanceTimers: (ms) => {
