@@ -3,7 +3,6 @@ import { describe, expect, it } from "vitest";
 
 import { SocialLogin } from "./SocialLogin";
 
-
 // socialbutton косвенно тестится тут, всё норм)
 describe("SocialLogin", () => {
     it("раздел подписан своим заголовком", () => {
