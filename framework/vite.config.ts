@@ -10,6 +10,17 @@ export default defineConfig({
     test: {
         environment: "jsdom",
         setupFiles: ["./src/test/setup.ts"],
+        // userEvent + фейковые таймеры зависают, если React не может дотикать
+        // свои внутренние таймеры: пусть часы идут вместе с реальным временем
+        fakeTimers: {
+            shouldAdvanceTime: true,
+        },
+        // в тестах удобнее видеть исходные имена классов, а не хеши CSS Modules
+        css: {
+            modules: {
+                classNameStrategy: "non-scoped",
+            },
+        },
         coverage: {
             provider: "v8",
             include: ["src/**/*.{ts,tsx}"],

@@ -3,6 +3,7 @@ import { useState, type SyntheticEvent } from "react";
 import { useField } from "../../hooks/useField";
 import { isValidEmail, isValidPassword } from "../../lib/validation";
 import { useAuthStore, type AuthStatus } from "../../store/authStore";
+import { useEffectsStore } from "../../store/effectsStore";
 import type { Message } from "../../types";
 import { CardHeading } from "../CardHeading/CardHeading";
 import { Checkbox } from "../Checkbox/Checkbox";
@@ -15,11 +16,17 @@ import styles from "./AuthForm.module.css";
 const validateEmail = (value: string): boolean => isValidEmail(value.trim());
 
 // какое сообщение показать под полями: оно выводится из состояния, хранить его отдельно не нужно
+// пасхалка идёт первой: она появляется в момент ввода слова и, как в native,
+// перекрывает предыдущее сообщение до следующего действия с формой
 function getMessage(
     status: AuthStatus,
     hasFormatError: boolean,
     showRestored: boolean,
+    easterEggMessage: string | null,
 ): Message | null {
+    if (easterEggMessage) {
+        return { text: easterEggMessage, type: "success" };
+    }
     if (hasFormatError) {
         return { text: "Проверьте формат email и пароля", type: "error" };
     }
@@ -38,6 +45,8 @@ function getMessage(
 export function AuthForm() {
     const status = useAuthStore((state) => state.status);
     const login = useAuthStore((state) => state.login);
+    const easterEggMessage = useEffectsStore((state) => state.easterEggMessage);
+    const clearEasterEgg = useEffectsStore((state) => state.clearEasterEgg);
 
     // сохранённая пара нужна только для начальных значений, поэтому читаем её один раз
     const [remembered] = useState(() => useAuthStore.getState().remembered);
@@ -56,6 +65,8 @@ export function AuthForm() {
         // Enter в поле может отправить форму, даже когда кнопка уже заблокирована
         if (isLoading) return;
 
+        // пасхалка — сообщение на один раз: при следующем действии с формой убираем его
+        clearEasterEgg();
         setShowRestored(false);
 
         const isEmailValid = email.validate();
@@ -107,7 +118,9 @@ export function AuthForm() {
                 onShakeEnd={password.stopShaking}
             />
 
-            <FormMessage message={getMessage(status, hasFormatError, showRestored)} />
+            <FormMessage
+                message={getMessage(status, hasFormatError, showRestored, easterEggMessage)}
+            />
 
             <div className={styles["row"]}>
                 <Checkbox
